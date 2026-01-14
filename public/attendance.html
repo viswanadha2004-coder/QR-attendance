@@ -16,7 +16,11 @@
 <script>
   function load() {
     const date = document.getElementById("date").value;
-    const url = date ? `/attendance?date=${date}` : `/attendance`;
+  
+    let url = "/attendance";
+    if (date) {
+      url += `?date=${date}`;
+    }
   
     fetch(url)
       .then(res => res.json())
@@ -31,21 +35,20 @@
   
         const grouped = {};
   
-        // Group by subject
         data.forEach(row => {
-          if (!grouped[row.subject]) grouped[row.subject] = [];
+          if (!grouped[row.subject]) {
+            grouped[row.subject] = [];
+          }
           grouped[row.subject].push(row);
         });
   
-        // Render tables
         for (const subject in grouped) {
           let html = `<h3>Subject: ${subject}</h3>`;
           html += `
-            <table>
+            <table border="1" cellpadding="8">
               <tr>
                 <th>Name</th>
                 <th>Roll No</th>
-                <th>Date</th>
                 <th>Time</th>
               </tr>
           `;
@@ -55,7 +58,6 @@
               <tr>
                 <td>${r.name}</td>
                 <td>${r.roll_no}</td>
-                <td>${new Date(r.date).toLocaleDateString()}</td>
                 <td>${r.time}</td>
               </tr>
             `;
@@ -67,13 +69,14 @@
       });
   }
   
-  // Auto load today's attendance
+  // auto load today's attendance
   window.onload = () => {
     const today = new Date().toISOString().split("T")[0];
     document.getElementById("date").value = today;
     load();
   };
   </script>
+  
   
 
 </body>
