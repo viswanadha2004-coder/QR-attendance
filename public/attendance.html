@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<link rel="stylesheet" href="style.css">
+
+<div class="container">
+  <h2>Attendance Report</h2>
+
+  <input type="date" id="date">
+  <button onclick="load()">Load Attendance</button>
+
+  <div id="tables"></div>
+</div>
+
+<script>
+  function load() {
+    const date = document.getElementById("date").value;
+    const url = date ? `/attendance?date=${date}` : `/attendance`;
+  
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById("tables");
+        container.innerHTML = "";
+  
+        if (data.length === 0) {
+          container.innerHTML = "<p>No attendance found</p>";
+          return;
+        }
+  
+        const grouped = {};
+  
+        // Group by subject
+        data.forEach(row => {
+          if (!grouped[row.subject]) grouped[row.subject] = [];
+          grouped[row.subject].push(row);
+        });
+  
+        // Render tables
+        for (const subject in grouped) {
+          let html = `<h3>Subject: ${subject}</h3>`;
+          html += `
+            <table>
+              <tr>
+                <th>Name</th>
+                <th>Roll No</th>
+                <th>Date</th>
+                <th>Time</th>
+              </tr>
+          `;
+  
+          grouped[subject].forEach(r => {
+            html += `
+              <tr>
+                <td>${r.name}</td>
+                <td>${r.roll_no}</td>
+                <td>${new Date(r.date).toLocaleDateString()}</td>
+                <td>${r.time}</td>
+              </tr>
+            `;
+          });
+  
+          html += "</table><br>";
+          container.innerHTML += html;
+        }
+      });
+  }
+  
+  // Auto load today's attendance
+  window.onload = () => {
+    const today = new Date().toISOString().split("T")[0];
+    document.getElementById("date").value = today;
+    load();
+  };
+  </script>
+  
+
+</body>
+</html>

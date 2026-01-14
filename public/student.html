@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<body>
+<link rel="stylesheet" href="style.css">
+
+<div class="container">
+<h2>My Attendance</h2>
+<h3 id="rollDisplay"></h3>
+
+<table border="1" cellpadding="8">
+  <thead>
+    <tr>
+      <th>Subject</th>
+      <th>Attended</th>
+      <th>Total</th>
+      <th>Percentage</th>
+    </tr>
+  </thead>
+  <tbody id="data"></tbody>
+</table>
+
+</div>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const roll = params.get("roll");
+  
+  document.getElementById("rollDisplay").innerText =
+    "Roll Number: " + roll;
+  
+  fetch(`/studentAttendance/${roll}`)
+    .then(res => res.json())
+    .then(data => {
+      const body = document.getElementById("data");
+      body.innerHTML = "";
+  
+      data.forEach(r => {
+        body.innerHTML += `
+          <tr>
+            <td>${r.subject}</td>
+            <td>${r.attended}</td>
+            <td>${r.total}</td>
+            <td>${r.percentage}%</td>
+          </tr>
+        `;
+      });
+    });
+</script>
+  
+
+</body>
+</html>

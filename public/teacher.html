@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<link rel="stylesheet" href="style.css">
+
+
+<div class="container">
+  <h2>Teacher Dashboard</h2>
+
+  <input id="subject" placeholder="Enter Subject">
+  <button onclick="generate()">Generate QR</button>
+
+  <button class="secondary-btn" onclick="location.href='attendance.html'">
+    View Attendance
+  </button>
+
+  <img id="qr">
+</div>
+
+
+<script>
+function generate() {
+  const subject = document.getElementById("subject").value;
+  fetch(`/generateQR/${subject}`)
+    .then(res => res.json())
+    .then(data => document.getElementById("qr").src = data.qr);
+}
+</script>
+</body>
+</html>

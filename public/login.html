@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<body>
+<link rel="stylesheet" href="style.css">
+
+<div class="container">
+
+<h2>Login</h2>
+
+<select id="role">
+  <option value="">Select Role</option>
+  <option value="teacher">Teacher</option>
+  <option value="student">Student</option>
+</select><br><br>
+
+<input id="username" placeholder="Roll No / Username"><br><br>
+<input id="password" type="password" placeholder="Password"><br><br>
+
+<button onclick="login()">Login</button>
+
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const token = params.get("token"); // present only after QR scan
+
+function login() {
+  const role = document.getElementById("role").value;
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+
+  if (!role) {
+    alert("Select role");
+    return;
+  }
+
+  if (!username || !password) {
+    alert("Enter username and password");
+    return;
+  }  
+
+  fetch("/login", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ role, username, password })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (!data.success) {
+      alert(data.message);
+      return;
+    }
+
+    // STUDENT FLOW
+    if (role === "student") {
+      if (token) {
+        // After QR scan
+        window.location.href = `/confirm.html?token=${token}&roll=${username}`;
+      } else {
+        // Normal student login
+        window.location.href = `/student.html?roll=${username}`;
+      }
+    }
+
+    // TEACHER FLOW
+    if (role === "teacher") {
+      window.location.href = "/teacher.html";
+    }
+  });
+}
+</script>
+
+</body>
+</html>

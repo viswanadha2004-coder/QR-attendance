@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h2>Confirm Attendance</h2>
+
+<button onclick="mark()">Confirm</button>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const token = params.get("token");
+const roll_no = params.get("roll");
+
+function mark() {
+  fetch("/markAttendance", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ roll_no, token })
+  })
+  .then(res => res.json())
+  .then(data => alert(data.message));
+}
+</script>
+
+</body>
+</html>

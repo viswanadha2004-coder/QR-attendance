@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h2>Mark Attendance</h2>
+
+<input id="roll" placeholder="Enter Roll Number">
+<button onclick="mark()">Confirm Attendance</button>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const token = params.get("token");
+
+function mark() {
+  const roll = document.getElementById("roll").value;
+
+  fetch("/markAttendance", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ roll, token })
+  })
+  .then(res => res.json())
+  .then(data => alert(data.message));
+}
+</script>
+
+</body>
+</html>
