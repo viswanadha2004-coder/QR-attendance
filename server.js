@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const QRCode = require("qrcode");
 const { v4: uuidv4 } = require("uuid");
